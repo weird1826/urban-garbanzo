@@ -67,3 +67,101 @@ Click on the Launch Instance button to deploy the instance.
 You can see the new instance running on the instances section.
 
 <img width="1591" height="712" alt="image" src="https://github.com/user-attachments/assets/83bce31b-006b-4d58-abe5-c63996a30b25" />
+
+### Customizing Security Groups
+
+Click on the instance ID and it will lead you to that instance's dashboard.
+
+<img width="1591" height="712" alt="image" src="https://github.com/user-attachments/assets/83a3d74c-1781-4cea-aa6f-4d7a8fb68340" />
+
+On the left-hand pane, scroll down to "Network & Security" and go to Security Groups page. Click on the ID of the security group we created during setup. That SG is attached to our instance.
+
+<img width="1913" height="816" alt="image" src="https://github.com/user-attachments/assets/22860018-3481-4ecb-8e07-3b9999f2a905" />
+
+On the details page, select "Edit inbound rules" (which will configure the rules for incoming connections):
+
+<img width="1637" height="762" alt="image" src="https://github.com/user-attachments/assets/9c0e2622-6182-449e-9120-d15096118cce" />
+
+Ensure that the existing configuration looks like this image below. If it does, click "Save rules" and go back.:
+
+<img width="1555" height="402" alt="image" src="https://github.com/user-attachments/assets/52c27fb5-184e-4787-b3e0-f18ccf7213b7" />
+
+You can try to create your custom rules by exploring available options, or can also create new security groups and assigning rules to them. When setting up access controls, always follow the principle of Least Privilege.
+
+### Enabling CloudWatch Monitoring & Setting up alarm
+
+Go the dashboard of our instance ID. Scroll down a little, and switch over to the monitoring tab. There you will see live graphs of instance health. This can be very important for scenarios involving high-workloads, and maximum uptime requirements.
+
+<img width="1902" height="827" alt="image" src="https://github.com/user-attachments/assets/06c8825c-5b2a-43e1-8618-69e02e5e7654" />
+
+Click on manage detailed monitoring, and enable it. This will update the graphs every minute.
+
+<img width="1897" height="835" alt="image" src="https://github.com/user-attachments/assets/543487f4-0977-4694-83c8-6777e8811c11" />
+
+Next, search for CloudWatch, and head over its console.
+
+<img width="1905" height="846" alt="image" src="https://github.com/user-attachments/assets/fdc2faa9-0b94-4612-bd4b-2fd8a4b41301" />
+
+On the left-hand pane, go to Alarms, and Create an alarm.
+
+<img width="1901" height="772" alt="image" src="https://github.com/user-attachments/assets/1e6c27ce-5f6f-4e6b-abb8-a48b28e516a7" />
+
+On the setup page, keep the existing options, and click on select a metric button.
+
+<img width="1902" height="825" alt="image" src="https://github.com/user-attachments/assets/8f601871-47c1-4725-bcd5-7d7d68a0665e" />
+
+Give your graph a name and Select EC2 metric:
+
+<img width="1757" height="801" alt="image" src="https://github.com/user-attachments/assets/f5fa299c-7115-4f2c-916d-22fe911123e9" />
+
+Next, select per-instance metric.
+
+<img width="1757" height="290" alt="image" src="https://github.com/user-attachments/assets/ca9a2876-e8fc-4229-ac3d-99dfeae25985" />
+
+On the final page, search for "CPU" and click on metric suggestion. And finally, select the appropriate EC2 instance ID and the graph will update above. Click on "Select Metric".
+
+<img width="1762" height="405" alt="image" src="https://github.com/user-attachments/assets/e157787d-34e0-44ba-aed0-9fb11ad61fad" />
+
+The page will be updated with your selected metric. Set the period to 5 minutes and the condition as when the "CPUUtilization gets greater than 70..."
+
+<img width="1602" height="658" alt="image" src="https://github.com/user-attachments/assets/70b69b9d-eaba-4d62-b097-70b6b91d828e" />
+
+Under additional configuration, set datapoints to alarm 5 out of 5 - this means that within 5 minutes, the data points must fire five times in order for the alarm to dispatch:
+
+<img width="537" height="430" alt="image" src="https://github.com/user-attachments/assets/047c2b7b-0426-4814-98ee-e289bd125186" />
+
+Click on Next. In the next step, you can create a new notification topic. Since, we do not have one, we have to create a new one like this:
+
+<img width="1596" height="690" alt="image" src="https://github.com/user-attachments/assets/45c4ff82-142c-4db9-8b9f-01238746c985" />
+
+The emails you specify will receive the alerts. If you press "Create Topic" your email will get a confirmation message sent. If you do not want to set it up for this lab, simply press "remove". Head over to the next page, give your alarm a name, add a markdown description, and some tags if you want. Click next to preview the settings.
+
+<img width="1907" height="732" alt="image" src="https://github.com/user-attachments/assets/211e5ee7-12a5-4233-bb26-5b8f0cb57f06" />
+
+On the final step, click the "Create alarm" button to finalize it.
+
+### Setting up Instance Level Firewall
+
+This can be very important defense-in-depth step as this will provide an extra layer of security in case the network-level firewall or security groups configurations are misconfigured. Head over to the instance home page.
+
+<img width="1877" height="631" alt="image" src="https://github.com/user-attachments/assets/5f542720-cd08-4d07-9388-99963e560918" />
+
+A new tab will open with connection details. Keep this pre-configured settings and click connect:
+
+<img width="1857" height="776" alt="image" src="https://github.com/user-attachments/assets/9d912d2c-1a5d-4ee9-aba6-8fd668f5bb68" />
+
+Once you see the terminal page, run these commands in order:
+
+```bash
+sudo dnf install -y firewalld
+sudo systemctl start firewalld
+sudo systemctl enable firewalld
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+```
+
+The final command should show this output:
+
+<img width="790" height="405" alt="image" src="https://github.com/user-attachments/assets/691e86a9-541b-4bf0-b1dc-c9aee13faa03" />
+
