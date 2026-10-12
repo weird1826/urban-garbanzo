@@ -1,4 +1,4 @@
-<img width="1542" height="815" alt="image" src="https://github.com/user-attachments/assets/eeac64c0-05b3-413d-b0a3-3654407dcaa1" /># Getting hands on with EC2
+# Getting hands on with EC2
 
 EC stands for Elastic Cloud Computing. It is a part of AWS's core IaaS cloud computing infrastructure which provides virtual computing services with high elasticity.
 
